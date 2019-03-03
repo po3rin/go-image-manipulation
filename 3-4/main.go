@@ -7,7 +7,6 @@ import (
 	_ "image/jpeg"
 	"image/png"
 	"io/ioutil"
-	"log"
 	"os"
 
 	"github.com/golang/freetype"
@@ -121,22 +120,15 @@ func GetCover() image.Image {
 }
 
 // DrawText テキストの合成
-func DrawText(img draw.Image) image.Image {
-	file, err := os.Open("./mplus-1c-regular.ttf")
-	if err != nil {
-		log.Fatal(err)
-	}
-	fontBytes, err := ioutil.ReadAll(file)
-	if err != nil {
-		log.Fatal(err)
-	}
-	f, err := freetype.ParseFont(fontBytes)
-	if err != nil {
-		log.Fatal(err)
-	}
+func DrawText(img draw.Image, text string) image.Image {
+	// フォントファイルを読み込んでfreetype.Fontにパース
+	file, _ := os.Open("./mplus-1c-regular.ttf")
+	fontBytes, _ := ioutil.ReadAll(file)
+	f, _ := freetype.ParseFont(fontBytes)
+
+	// freetypeの機能で画像に文字を合成
 	if f != nil {
 		c := freetype.NewContext()
-		c.SetDPI(72)
 		c.SetFont(f)
 		c.SetFontSize(38)
 		c.SetClip(img.Bounds())
@@ -144,7 +136,7 @@ func DrawText(img draw.Image) image.Image {
 		c.SetSrc(NewRect(img.Bounds(), color.RGBA{255, 255, 255, 255}))
 		c.SetHinting(font.HintingNone)
 		pt := freetype.Pt(300, 500)
-		_, _ = c.DrawString("Goではじめる画像処理、画像解析", pt)
+		_, _ = c.DrawString(text, pt)
 	}
 	return img
 }
@@ -158,13 +150,15 @@ func main() {
 	mask := NewRect(r, color.RGBA{0, 0, 0, 140})
 
 	// coverをsrcとしてdstに合成
-	draw.DrawMask(dst, r,
+	draw.DrawMask(
+		dst, r,
 		cover, image.Pt(0, 0),
 		mask, image.Pt(0, 0),
 		draw.Over,
 	)
 	// srcを真ん中に合成。
-	draw.Draw(dst, r,
+	draw.Draw(
+		dst, r,
 		src, image.Pt(
 			-r.Bounds().Max.X/2+src.Bounds().Max.X/2,
 			-r.Bounds().Max.Y/2+src.Bounds().Max.Y/2,
@@ -172,7 +166,8 @@ func main() {
 		draw.Over,
 	)
 
-	d := DrawText(dst)
+	text := "Goではじめる画像処理、画像解析"
+	d := DrawText(dst, text)
 
 	// 書き出し
 	png.Encode(os.Stdout, d)
