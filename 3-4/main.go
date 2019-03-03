@@ -3,11 +3,16 @@ package main
 import (
 	"image"
 	"image/color"
+	"image/draw"
 	_ "image/jpeg"
 	"image/png"
+	"io/ioutil"
+	"log"
 	"os"
 
+	"github.com/golang/freetype"
 	"github.com/po3rin/go-image-manipulation/3-3/resize/lerp"
+	"golang.org/x/image/font"
 )
 
 //Resize は与えられた画像を線形補間法を使用して画像を拡大・縮小する。
@@ -85,8 +90,90 @@ func LerpEffect(src image.Image, xRatio, yRatio float64, x, y int) color.RGBA64 
 	return color.RGBA64{uint16(r), uint16(g), uint16(b), uint16(a)}
 }
 
+// NewRect 指定した大きさの画像を指定色で塗りつぶした画像を生成
+func NewRect(r image.Rectangle, c color.Color) draw.Image {
+	dst := image.NewRGBA(r)
+	rect := dst.Rect
+	for h := rect.Min.Y; h < rect.Max.Y; h++ {
+		for v := rect.Min.X; v < rect.Max.X; v++ {
+			dst.Set(v, h, c)
+		}
+	}
+	return dst
+}
+
+// GetSrc 合成する画像を読み込んで横幅300の画像にリサイズした結果を消す
+func GetSrc() image.Image {
+	src, _, _ := image.Decode(os.Stdin)
+	rate := float64(300) / float64(src.Bounds().Max.X)
+	src = Resize(src, rate, rate)
+	return src
+}
+
+// GetCover カバー画像を読み込み、OGP画像(横幅1200px)に合うようにリサイズした結果を消す
+func GetCover() image.Image {
+	f, _ := os.Open("./cover.jpg")
+	defer f.Close()
+	cover, _, _ := image.Decode(f)
+	rate := float64(1200) / float64(cover.Bounds().Max.X)
+	cover = Resize(cover, rate, rate)
+	return cover
+}
+
+// DrawText テキストの合成
+func DrawText(img draw.Image) image.Image {
+	file, err := os.Open("./mplus-1c-regular.ttf")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fontBytes, err := ioutil.ReadAll(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	f, err := freetype.ParseFont(fontBytes)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if f != nil {
+		c := freetype.NewContext()
+		c.SetDPI(72)
+		c.SetFont(f)
+		c.SetFontSize(38)
+		c.SetClip(img.Bounds())
+		c.SetDst(img)
+		c.SetSrc(NewRect(img.Bounds(), color.RGBA{255, 255, 255, 255}))
+		c.SetHinting(font.HintingNone)
+		pt := freetype.Pt(300, 500)
+		_, _ = c.DrawString("Goではじめる画像処理、画像解析", pt)
+	}
+	return img
+}
+
 func main() {
-	img, _, _ := image.Decode(os.Stdin)
-	dst := Resize(img, 3, 3)
-	png.Encode(os.Stdout, dst)
+	r := image.Rectangle{Min: image.Point{0, 0}, Max: image.Point{1200, 630}}
+
+	dst := NewRect(r, color.RGBA{0, 0, 0, 250})
+	src := GetSrc()
+	cover := GetCover()
+	mask := NewRect(r, color.RGBA{0, 0, 0, 140})
+
+	// coverをsrcとしてdstに合成
+	draw.DrawMask(dst, r,
+		cover, image.Pt(0, 0),
+		mask, image.Pt(0, 0),
+		draw.Over,
+	)
+	// srcを真ん中に合成。
+	draw.Draw(dst, r,
+		src, image.Pt(
+			-r.Bounds().Max.X/2+src.Bounds().Max.X/2,
+			-r.Bounds().Max.Y/2+src.Bounds().Max.Y/2,
+		),
+		draw.Over,
+	)
+
+	d := DrawText(dst)
+
+	// 書き出し
+	png.Encode(os.Stdout, d)
 }
