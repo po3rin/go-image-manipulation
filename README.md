@@ -1,11 +1,10 @@
 # go-image-manipulation
 
-Sample to manipulate images in techbookfest-6 book written by golang.tokyo.
+golang.tokyoが技術書典6で配布する技術書の第n章(未定)のコードです。
 
-## Quick Start
-
-```
-$ make run CMD="go run 3-5/hellogocv/main.go"
-gocv version: 0.18.0
-opencv verson: 4.0.1
-```
+|ディレクトリ|内容|
+|:-----------|------------:|
+|3-2|imageパッケージの基本を抑えよう|
+|3-3|線形補正法を実装して画像リサイズの仕組みを学ぼう|
+|3-4|画像やテキストを合成してOGP画像を生成してみよう|
+|3-5|OpenCVを使って画像解析をやってみよう|

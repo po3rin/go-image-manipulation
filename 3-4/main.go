@@ -111,7 +111,7 @@ func GetSrc() image.Image {
 
 // GetCover カバー画像を読み込み、OGP画像(横幅1200px)に合うようにリサイズした結果を消す
 func GetCover() image.Image {
-	f, _ := os.Open("./cover.jpg")
+	f, _ := os.Open("./src/cover.jpg")
 	defer f.Close()
 	cover, _, _ := image.Decode(f)
 	rate := float64(1200) / float64(cover.Bounds().Max.X)
@@ -122,7 +122,7 @@ func GetCover() image.Image {
 // DrawText テキストの合成
 func DrawText(img draw.Image, text string) image.Image {
 	// フォントファイルを読み込んでfreetype.Fontにパース
-	file, _ := os.Open("./mplus-1c-regular.ttf")
+	file, _ := os.Open("./src/mplus-1c-regular.ttf")
 	fontBytes, _ := ioutil.ReadAll(file)
 	f, _ := freetype.ParseFont(fontBytes)
 
