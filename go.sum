@@ -4,6 +4,11 @@ github.com/hybridgroup/gocv v0.18.0 h1:dw/5+skEG1XkbVSK2kzttfiF2uW7nywNzBv8fp/nL
 github.com/hybridgroup/gocv v0.18.0/go.mod h1:gohxWQsZShq3UgYtoLJV1GvxzYt+UNr0gyX5VdKdkFk=
 github.com/kaepa3/effector v0.0.0-20170203064527-1780955f48c8 h1:t5p2QQMTV1V4JeHEaWsjWWzPDIy6onZICaRthPzkYLY=
 github.com/kaepa3/effector v0.0.0-20170203064527-1780955f48c8/go.mod h1:90q77b981EntiEDWz3jPA86hl5SQamjRrtAidvvdpdc=
+github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 h1:zYyBkD/k9seD2A7fsi6Oo2LfFZAehjjQMERAvZLEDnQ=
+github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646/go.mod h1:jpp1/29i3P1S/RLdc7JQKbRpFeM1dOBd8T9ki5s+AY8=
+github.com/po3rin/go-image-manipulation v0.0.0-20190303153604-6ca6b73a86ff/go.mod h1:j7SGIVBjeOAE22fgRPxwrl9vySiblanR0UQosmbx5zU=
+github.com/po3rin/resize v0.0.0-20190311085431-876a710a8280 h1:dcK7E26NFVL2LgDtR+uhTMKdnYi7i+jgiKuVlhbShrg=
+github.com/po3rin/resize v0.0.0-20190311085431-876a710a8280/go.mod h1:7Cd1MJHWBhEyeyVuzyYcpZBR7eswD43AeRCGQCQYsN8=
 gocv.io/x/gocv v0.18.0 h1:uW6C5ZjvEZjW+SwHtObmIWH73xNSsUXtSR26+k7OHpA=
 gocv.io/x/gocv v0.18.0/go.mod h1:3qacsKAMRS0sZmeLySWcbFeVEU3t86igWaQleAgiuBg=
 golang.org/x/image v0.0.0-20190227222117-0694c2d4d067 h1:KYGJGHOQy8oSi1fDlSpcZF0+juKwk/hEMv5SiwHogR0=
