@@ -23,14 +23,15 @@ func getDst() draw.Image {
 	return dst
 }
 
-func whiteToTransparent(src image.Image) image.Image {
+func white2mask(src image.Image) image.Image {
 	bounds := src.Bounds()
 	dst := image.NewRGBA(bounds)
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 			var col color.RGBA
-			r, _, _, _ := src.At(x, y).RGBA()
-			if r == 65535 {
+			c := color.Gray16Model.Convert(src.At(x, y))
+			gray, _ := c.(color.Gray16)
+			if gray != color.Black {
 				col = color.RGBA{0, 0, 0, 255}
 			}
 			dst.Set(x, y, col)
@@ -41,13 +42,13 @@ func whiteToTransparent(src image.Image) image.Image {
 
 func main() {
 	// グレイスケール化
-	cvtSrc := gocv.IMRead("./src/go.jpeg", gocv.IMReadColor)
+	cvtSrc := gocv.IMRead("./src/gopher.png", gocv.IMReadColor)
 	gray := gocv.NewMatWithSize(460, 460, gocv.MatTypeCV64F)
 	gocv.CvtColor(cvtSrc, &gray, gocv.ColorBGRToGray)
 
 	// 二値化
 	thresholdDst := gocv.NewMatWithSize(460, 460, gocv.MatTypeCV64F)
-	gocv.Threshold(gray, &thresholdDst, 127, 255, gocv.ThresholdBinaryInv)
+	gocv.Threshold(gray, &thresholdDst, 205, 255, gocv.ThresholdBinaryInv)
 
 	// 輪郭抽出
 	points := gocv.FindContours(thresholdDst, gocv.RetrievalExternal, gocv.ChainApproxSimple)
@@ -59,8 +60,7 @@ func main() {
 	r := src.Bounds()
 
 	maskSrc := matToImage(gocv.PNGFileExt, thresholdDst)
-	mask := whiteToTransparent(maskSrc)
-	png.Encode(os.Stdout, mask)
+	mask := white2mask(maskSrc)
 
 	dst := getDst()
 
