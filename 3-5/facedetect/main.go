@@ -18,7 +18,7 @@ func main() {
 	}
 
 	// 画像をMat形式に
-	img := gocv.IMRead("./src/nogi.jpg", gocv.IMReadColor)
+	img := gocv.IMRead("./src/face.jpg", gocv.IMReadColor)
 	if img.Empty() {
 		fmt.Println("Error reading image")
 		return
