@@ -44,7 +44,7 @@ func getLerpParam(dstPos int, ratio float64) (int, int, float64) {
 	return v1, v2, v3
 }
 
-// initGetOneColorFunc RGBAいずれかを返す(x,y)座標依存関数を返す。
+// initGetOneColorFunc RGBAいずれかを返す(x,y)座標依存関数を作る。
 func initGetOneColorFunc(src image.Image, colorName string) lerp.PosDependFunc {
 	return func(x, y int) float64 {
 		var c uint32

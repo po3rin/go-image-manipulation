@@ -1,6 +1,6 @@
 # go-image-manipulation
 
-golang.tokyoが技術書典6で配布する技術書の第n章(未定)のコードです。
+golang.tokyoが技術書典6で配布する技術書の@po3rinが執筆する第n章(未定)のコードです。
 
 ## コンテンツ
 
@@ -13,7 +13,7 @@ golang.tokyoが技術書典6で配布する技術書の第n章(未定)のコー�
 
 ## OpenCV環境の動かし方
 
-OpenCVをGoで動かす為のDockerfileを用意しています。
+3-5節ではOpenCVを使う為、OpenCVをGoで動かす為のDockerfileを用意しています。コマンドを渡せば実行できるMakefileを用意しています。
 
 ```console
 $ make run CMD="go run 3-5/hellogocv/main.go"

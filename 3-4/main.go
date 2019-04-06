@@ -72,7 +72,7 @@ func main() {
 	dst := NewRect(r, color.RGBA{0, 0, 0, 250})
 	src := GetSrc()
 	cover := GetCover()
-	mask := NewRect(r, color.RGBA{0, 0, 0, 140})
+	mask := NewRect(r, color.RGBA{0, 0, 0, 60})
 
 	// coverをsrcとしてdstに合成
 	draw.DrawMask(
