@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
+	_ "image/jpeg"
 	"image/png"
 	"os"
 
@@ -18,7 +19,7 @@ func matToImage(fileExt gocv.FileExt, mat gocv.Mat) image.Image {
 }
 
 func getDst() draw.Image {
-	s, _ := png.Decode(os.Stdin)
+	s, _, _ := image.Decode(os.Stdin)
 	dst, _ := s.(draw.Image)
 	return dst
 }
@@ -42,13 +43,13 @@ func white2mask(src image.Image) image.Image {
 
 func main() {
 	// グレイスケール化
-	cvtSrc := gocv.IMRead("./src/gopher.png", gocv.IMReadColor)
+	cvtSrc := gocv.IMRead("./src/fuku_gopher.png", gocv.IMReadColor)
 	gray := gocv.NewMatWithSize(460, 460, gocv.MatTypeCV64F)
 	gocv.CvtColor(cvtSrc, &gray, gocv.ColorBGRToGray)
 
 	// 二値化
 	thresholdDst := gocv.NewMatWithSize(460, 460, gocv.MatTypeCV64F)
-	gocv.Threshold(gray, &thresholdDst, 205, 255, gocv.ThresholdBinaryInv)
+	gocv.Threshold(gray, &thresholdDst, 150, 150, gocv.ThresholdBinaryInv)
 
 	// 輪郭抽出
 	points := gocv.FindContours(thresholdDst, gocv.RetrievalExternal, gocv.ChainApproxSimple)
@@ -56,14 +57,16 @@ func main() {
 	// 輪郭の内側を白にする
 	gocv.DrawContours(&thresholdDst, points, -1, color.RGBA{255, 255, 255, 0}, -1)
 
+	// image.Image に変換
 	src := matToImage(gocv.PNGFileExt, cvtSrc)
-	r := src.Bounds()
-
 	maskSrc := matToImage(gocv.PNGFileExt, thresholdDst)
+
+	// draw.Draw の 引数準備
+	dst := getDst()
+	r := src.Bounds()
 	mask := white2mask(maskSrc)
 
-	dst := getDst()
-
+	// draw.Draw 実行
 	draw.DrawMask(dst, r, src, image.Pt(0, 0), mask, image.Pt(0, 0), draw.Over)
 	png.Encode(os.Stdout, dst)
 }
